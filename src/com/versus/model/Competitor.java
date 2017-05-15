@@ -1,16 +1,10 @@
 package com.versus.model;
 
-public class Competitor {
+public class Competitor extends Entity {
 
-	private int id;
 	private String name;
 
-	public int getId() {
-		return id;
-	}
-
-	public Competitor setId(int id) {
-		this.id = id;
+	public Competitor setId() {
 		return this;
 	}
 
@@ -18,13 +12,11 @@ public class Competitor {
 		return name;
 	}
 
-	public Competitor setName(String name) {
+	public void setName(String name) {
 		this.name = name;
-		return this;
 	}
 
-	public Competitor(int id, String name) {
-		this.setId(id);
+	public Competitor(String name) {
 		this.setName(name);
 	}
 }

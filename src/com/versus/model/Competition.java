@@ -1,20 +1,15 @@
 package com.versus.model;
 
-class Competition {
+import java.util.ArrayList;
+import java.util.List;
 
-	private int id;
+abstract class Competition extends Entity {
+
 	private String name;
-	private Competitor[] competitors;
-	private Match[] matches;
-	private Competition linksTo;
-	private int linkSpots;
+	private List<Competitor> competitors = new ArrayList<>();
+	private CompetitionLink link;
 
-	public int getId() {
-		return id;
-	}
-
-	public Competition setId(int id) {
-		this.id = id;
+	public Competition setId() {
 		return this;
 	}
 
@@ -22,49 +17,27 @@ class Competition {
 		return name;
 	}
 
-	public Competition setName(String name) {
+	public void setName(String name) {
 		this.name = name;
-		return this;
 	}
 
-	public Competitor[] getCompetitors() {
+	public void addCompetitor(Competitor competitor) {
+		this.competitors.add(competitor);
+	}
+
+	public List<Competitor> getCompetitors() {
 		return competitors;
 	}
 
-	public Competition setCompetitors(Competitor[] competitors) {
-		this.competitors = competitors;
-		return this;
+	public CompetitionLink getLink() {
+		return link;
 	}
 
-	public Match[] getMatches() {
-		return matches;
+	public void setLink(CompetitionLink link) {
+		this.link = link;
 	}
 
-	public Competition setMatches(Match[] matches) {
-		this.matches = matches;
-		return this;
-	}
-
-	public Competition getLinksTo() {
-		return linksTo;
-	}
-
-	public Competition setLinksTo(Competition linksTo) {
-		this.linksTo = linksTo;
-		return this;
-	}
-
-	public int getLinkSpots() {
-		return linkSpots;
-	}
-
-	public Competition setLinkSpots(int linkSpots) {
-		this.linkSpots = linkSpots;
-		return this;
-	}
-
-	public Competition(int id, String name) {
-		this.setId(id);
+	public Competition(String name) {
 		this.setName(name);
 	}
 }

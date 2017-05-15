@@ -9,18 +9,16 @@ public class MatchResult {
 		return localScore;
 	}
 
-	public MatchResult setLocalScore(int localScore) {
+	public void setLocalScore(int localScore) {
 		this.localScore = localScore;
-		return this;
 	}
 
 	public int getVisitorScore() {
 		return visitorScore;
 	}
 
-	public MatchResult setVisitorScore(int visitorScore) {
+	public void setVisitorScore(int visitorScore) {
 		this.visitorScore = visitorScore;
-		return this;
 	}
 
 	public MatchResult(int localScore, int visitorScore) {
@@ -28,10 +26,6 @@ public class MatchResult {
 		this.setVisitorScore(visitorScore);
 	}
 
-	/**
-	 * Calculates who is the winner of the match.
-	 * @return EMatchWinner
-	 */
 	public EMatchWinner getWinner() {
 		// TODO lanzar excepción si no está definido el resultado o los jugadores
 		if (this.getLocalScore() > this.getVisitorScore()) {

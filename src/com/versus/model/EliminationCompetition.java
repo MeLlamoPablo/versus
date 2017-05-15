@@ -1,9 +1,11 @@
 package com.versus.model;
 
-class EliminationCompetition extends Competition {
+abstract class EliminationCompetition extends Competition {
 
-	public EliminationCompetition(int id, String name) {
-		super(id, name);
+	public EliminationCompetition(String name) {
+		super(name);
 	}
+
+
 
 }
