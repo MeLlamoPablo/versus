@@ -7,6 +7,11 @@ public class DoubleEliminationCompetition extends EliminationCompetition {
 	}
 
 	@Override
+	void sendCompetitorsToNextCompetition() {
+		// TODO
+	}
+
+	@Override
 	public void onBracketEnded(Competitor winner, Bracket bracket) {
 
 		// TODO

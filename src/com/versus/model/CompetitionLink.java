@@ -1,5 +1,10 @@
 package com.versus.model;
 
+/**
+ * Un CompetitionLink (enlace entre competiciones) permite crear jerarquías entre competiciones,
+ * mediante las cuales los X primeros competidores de la primera competición son automáticamente
+ * añaidos como competidores en la segunda. X viene dado por el parámetro spots.
+ */
 public class CompetitionLink {
 
 	private Competition target;

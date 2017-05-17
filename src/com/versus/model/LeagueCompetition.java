@@ -11,4 +11,9 @@ public class LeagueCompetition extends Competition {
 	boolean isResultValid(MatchResult result) {
 		return true;
 	}
+
+	@Override
+	void sendCompetitorsToNextCompetition() {
+		// TODO
+	}
 }

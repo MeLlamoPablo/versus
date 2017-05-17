@@ -37,7 +37,7 @@ abstract class Competition extends Entity {
 		return link;
 	}
 
-	public void setLink(CompetitionLink link) {
+	public void setLink(CompetitionLink link) throws Exception {
 		this.link = link;
 	}
 
@@ -68,4 +68,6 @@ abstract class Competition extends Entity {
 	 * @return True si es válido, o falso si no lo es.
 	 */
 	abstract boolean isResultValid(MatchResult result);
+
+	abstract void sendCompetitorsToNextCompetition();
 }

@@ -1,5 +1,10 @@
 package com.versus.model;
 
+/**
+ * Un MatchLink (enlace entre partidas) permite determinar el siguiente partido que jugarán los
+ * competidores ganador y perdedor. Si esta definido, al llamar al método Match#setResult(), los
+ * competidores serán asignados automáticamente al siguiente partido.
+ */
 public class MatchLink {
 
 	private Match winnerTarget;

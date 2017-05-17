@@ -1,10 +1,9 @@
 package com.versus;
 
 import com.versus.model.Bracket;
+import com.versus.model.CompetitionLink;
 import com.versus.model.Competitor;
-import com.versus.model.MatchResult;
 import com.versus.model.SingleEliminationCompetition;
-import com.versus.model.interfaces.CompetitionEndedListener;
 
 public class Main {
 
@@ -12,26 +11,32 @@ public class Main {
 
 		try {
 
-			SingleEliminationCompetition competition = new SingleEliminationCompetition(
-				"Torneo de prueba");
+			SingleEliminationCompetition clasificatoria = new SingleEliminationCompetition(
+				"Clasificatoria");
 
-			competition.addCompetitor(new Competitor("Competitor 1"));
-			competition.addCompetitor(new Competitor("Competitor 2"));
-			competition.addCompetitor(new Competitor("Competitor 3"));
-			competition.addCompetitor(new Competitor("Competitor 4"));
-			competition.addCompetitor(new Competitor("Competitor 5"));
-			competition.addCompetitor(new Competitor("Competitor 6"));
-			competition.addCompetitor(new Competitor("Competitor 7"));
-			competition.addCompetitor(new Competitor("Competitor 8"));
+			SingleEliminationCompetition principal = new SingleEliminationCompetition(
+				"Principal");
 
-			competition.shuffleSeeds();
+			clasificatoria.setLink(new CompetitionLink(principal, 1));
 
-			competition.setCompetitionEndedListener(winner -> {
-				System.out.println("La competición " + competition.getName() + " ha terminado!");
+			clasificatoria.addCompetitor(new Competitor("Competitor 1"));
+			clasificatoria.addCompetitor(new Competitor("Competitor 2"));
+			clasificatoria.addCompetitor(new Competitor("Competitor 3"));
+			clasificatoria.addCompetitor(new Competitor("Competitor 4"));
+			clasificatoria.addCompetitor(new Competitor("Competitor 5"));
+			clasificatoria.addCompetitor(new Competitor("Competitor 6"));
+			clasificatoria.addCompetitor(new Competitor("Competitor 7"));
+			clasificatoria.addCompetitor(new Competitor("Competitor 8"));
+
+			clasificatoria.shuffleSeeds();
+
+			clasificatoria.setCompetitionEndedListener(winner -> {
+				System.out.println("La competición " + clasificatoria.getName() + " ha terminado!");
 				System.out.println("El ganador es: " + winner.getName());
+				System.out.println("El ganador se ha clasificado para: " + principal.getName());
 			});
 
-			Bracket bracket = competition.generateBracket();
+			Bracket bracket = clasificatoria.generateBracket();
 
 			// Cuartos
 			bracket.getRound(0).getMatch(0).setResult(2, 0);
