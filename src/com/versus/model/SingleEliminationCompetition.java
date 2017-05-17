@@ -16,9 +16,23 @@ public class SingleEliminationCompetition extends EliminationCompetition {
 		super(name);
 	}
 
-	public Bracket generateBracket() {
-		this.setBracket(Bracket.generateFor(this.getCompetitors(), this));
-		return this.getBracket();
+	public Bracket generateBracket() throws Exception {
+
+		Bracket bracket = Bracket.generateFor(this.getCompetitors(), this);
+		bracket.setBracketEndedListener(this);
+		this.setBracket(bracket);
+
+		return bracket;
+
+	}
+
+	@Override
+	public void onBracketEnded(Competitor winner, Bracket bracket) {
+
+		if (this.getCompetitionEndedListener() != null) {
+			this.getCompetitionEndedListener().onWinner(winner);
+		}
+
 	}
 
 }

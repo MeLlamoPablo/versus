@@ -1,5 +1,7 @@
 package com.versus.model;
 
+import com.versus.model.interfaces.MatchUpdatedListener;
+
 public class Match extends Entity {
 
 	private MatchResult result;
@@ -7,13 +9,28 @@ public class Match extends Entity {
 	private Competitor visitorCompetitor;
 	private Competition competition;
 	private MatchLink link = new MatchLink();
+	private MatchUpdatedListener matchUpdatedListener;
 
 	public MatchResult getResult() {
 		return result;
 	}
 
-	public void setResult(MatchResult result) {
+	public void setResult(int localScore, int visitorScore) throws Exception {
+		this.setResult(new MatchResult(localScore, visitorScore));
+	}
+
+	private void setResult(MatchResult result) throws Exception {
+
+		if (!this.getCompetition().isResultValid(result)) {
+			throw new Exception("The result you entered is invalid.");
+		}
+
 		this.result = result;
+
+		if (this.getMatchUpdatedListener() != null) {
+			this.getMatchUpdatedListener().onMatchUpdated(this);
+		}
+
 	}
 
 	public Competitor getLocalCompetitor() {
@@ -42,6 +59,14 @@ public class Match extends Entity {
 
 	public MatchLink getLink() {
 		return link;
+	}
+
+	private MatchUpdatedListener getMatchUpdatedListener() {
+		return matchUpdatedListener;
+	}
+
+	public void setMatchUpdatedListener(MatchUpdatedListener matchUpdatedListener) {
+		this.matchUpdatedListener = matchUpdatedListener;
 	}
 
 	public Competitor getWinner() {

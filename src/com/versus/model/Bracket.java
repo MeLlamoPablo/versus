@@ -1,18 +1,22 @@
 package com.versus.model;
 
+import com.versus.model.interfaces.BracketEndedListener;
+import com.versus.model.interfaces.RoundEndedListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Bracket {
+public class Bracket implements RoundEndedListener {
 
 	private List<Round> rounds = new ArrayList<>();
+	private BracketEndedListener bracketEndedListener;
 
 	public List<Round> getRounds() {
 		return this.rounds;
 	}
 
-	public void setRounds(List<Round> rounds) {
+	void setRounds(List<Round> rounds) {
 		this.rounds = rounds;
 	}
 
@@ -20,21 +24,37 @@ public class Bracket {
 		return this.rounds.get(index);
 	}
 
+	public BracketEndedListener getBracketEndedListener() {
+		return bracketEndedListener;
+	}
+
+	void setBracketEndedListener(BracketEndedListener bracketEndedListener) {
+		this.bracketEndedListener = bracketEndedListener;
+	}
+
 	public Bracket(List<Round> rounds) {
 		this.rounds = rounds;
 	}
 
-	public static Bracket generateFor(List<Competitor> competitors, Competition competition) {
+	public static Bracket generateFor(List<Competitor> competitors, Competition competition) throws Exception {
 
-		// TODO generar para nºs distintos de potencias de dos
+		double numberOfRoundsWithDecimals = log(2, competitors.size());
 
-		int numberOfRounds = log(2, competitors.size());
+		// Si numberOfRoundsWithDecimals tiene parte decimal.
+		if (numberOfRoundsWithDecimals % 1 != 0) {
+			throw new Exception("Generating brackets is only possible with a competitor list with a length equal to " +
+				"a power of two (i.e: 2, 4, 8, 16...)");
+		}
+
+		int numberOfRounds = (int) numberOfRoundsWithDecimals;
 
 		List<Round> rounds = new ArrayList<>();
+		Bracket bracket = new Bracket(rounds);
 
 		for (int i = 0; i < numberOfRounds; i++) {
 
 			Round round = new Round();
+			round.setRoundEndedListener(bracket);
 
 			int numberOfMatches = (int) Math.pow(2, i);
 
@@ -43,7 +63,6 @@ public class Bracket {
 				Match match = new Match();
 
 				match.setCompetition(competition);
-
 				round.addMatch(match);
 
 			}
@@ -52,7 +71,7 @@ public class Bracket {
 
 		}
 
-		// So that the round with the most competitors is the first and not the last.
+		// Para que la ronda con el mayor número de competitors sea la primera y no la última
 		Collections.reverse(rounds);
 
 		rounds.get(0).addCompetitors(competitors);
@@ -67,13 +86,22 @@ public class Bracket {
 
 		}
 
-		return new Bracket(rounds);
+		return bracket;
 
 	}
 
 	@SuppressWarnings("SameParameterValue")
-	private static int log(int base, int x) {
-		return (int) (Math.log(x) / Math.log(base));
+	private static double log(int base, int x) {
+		return Math.log(x) / Math.log(base);
 	}
 
+	@Override
+	public void onRoundEnded(Round round) {
+
+		// Si la ronda es la final
+		if (round.getMatches().size() == 1) {
+			this.getBracketEndedListener().onBracketEnded(round.getMatch(0).getWinner(), this);
+		}
+
+	}
 }
