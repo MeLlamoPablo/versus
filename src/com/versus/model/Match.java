@@ -25,6 +25,10 @@ public class Match extends Entity {
 			throw new Exception("The result you entered is invalid.");
 		}
 
+		if (this.getLocalCompetitor() == null || this.getVisitorCompetitor() == null) {
+			throw new Exception("Can't set a result for this match because one of the competitors is missing!");
+		}
+
 		this.result = result;
 
 		if (this.getMatchUpdatedListener() != null) {
