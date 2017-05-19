@@ -4,7 +4,9 @@ import com.versus.model.interfaces.MatchUpdatedListener;
 import com.versus.model.interfaces.RoundEndedListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 public class Round extends Entity implements MatchUpdatedListener {
 
@@ -85,6 +87,66 @@ public class Round extends Entity implements MatchUpdatedListener {
 		}
 
 	}
+
+	/**
+	 * @return Una ronda con partidas para los perdedores de esta ronda.
+	 */
+	Round generateLosersRound() {
+
+		Round losersRound = new Round();
+		// Asumimos que todas las partidas tienen la misma competición.
+		Competition currentCompetition = this.matches.get(0).getCompetition();
+
+		List<Match> losersRoundMatches = new ArrayList<>();
+
+		// TODO hacer esto en un solo bucle
+		for (int i = 0; i < this.matches.size() / 2; i++) {
+
+			Match match = new Match();
+			match.setCompetition(currentCompetition);
+
+			losersRoundMatches.add(match);
+
+		}
+
+		for (int i = 0; i < this.matches.size(); i++) {
+
+			MatchLink matchLink = this.matches.get(i).getLink();
+
+			matchLink.setLoserTarget(losersRoundMatches.get(i / 2));
+			matchLink.setLoserPosition(
+				(i % 2 == 0) ? MatchLink.EMatchPosition.LOCAL : MatchLink.EMatchPosition.VISITOR);
+
+		}
+
+		losersRoundMatches.forEach(losersRound::addMatch);
+
+		return losersRound;
+
+	}
+
+	/*
+	 * En los torneos de doble eliminación (DoubleEliminationCompetition), crea un enlace a la ronda correspondiente del
+	 * cuadro inferior (lowerBracket). Esto permite que los perdedores de las partidas de esta ronda pasen
+	 * automáticamente a la misma. El método updateLinks() se encargará de añadir a los competidores
+	 * perdedores a sus correspondientes partidas, una vez su partida correspondiente en esta ronda tenga un resultado
+	 * (MatchResult) que no sea null, ni empate.
+	 *
+	 * @param lowerRound La correspondiente Round en el lowerBracket
+	 */
+	/*void linkToLowerRound(Round lowerRound) {
+
+		for (int i = 0; i < this.matches.size(); i++) {
+
+			MatchLink matchLink = this.matches.get(i).getLink();
+
+			matchLink.setLoserTarget(lowerRound.getMatches().get(i / 2));
+			matchLink.setLoserPosition(
+				(i % 2 == 0) ? MatchLink.EMatchPosition.LOCAL : MatchLink.EMatchPosition.VISITOR);
+
+		}
+
+	}*/
 
 	/**
 	 * Comprueba todos los enlaces de las partidas de esta ronda.

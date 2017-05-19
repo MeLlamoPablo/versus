@@ -1,9 +1,6 @@
 package com.versus;
 
-import com.versus.model.Bracket;
-import com.versus.model.CompetitionLink;
-import com.versus.model.Competitor;
-import com.versus.model.SingleEliminationCompetition;
+import com.versus.model.*;
 
 public class Main {
 
@@ -11,7 +8,7 @@ public class Main {
 
 		try {
 
-			SingleEliminationCompetition clasificatoria = new SingleEliminationCompetition(
+			/*SingleEliminationCompetition clasificatoria = new SingleEliminationCompetition(
 				"Clasificatoria");
 
 			SingleEliminationCompetition principal = new SingleEliminationCompetition(
@@ -49,7 +46,20 @@ public class Main {
 			bracket.getRound(1).getMatch(1).setResult(1, 2);
 
 			// Final
-			bracket.getRound(2).getMatch(0).setResult(0, 1);
+			bracket.getRound(2).getMatch(0).setResult(0, 1);*/
+
+			DoubleEliminationCompetition competition = new DoubleEliminationCompetition("Competition");
+
+			competition.addCompetitor(new Competitor("Competitor 1"));
+			competition.addCompetitor(new Competitor("Competitor 2"));
+			competition.addCompetitor(new Competitor("Competitor 3"));
+			competition.addCompetitor(new Competitor("Competitor 4"));
+			competition.addCompetitor(new Competitor("Competitor 5"));
+			competition.addCompetitor(new Competitor("Competitor 6"));
+			competition.addCompetitor(new Competitor("Competitor 7"));
+			competition.addCompetitor(new Competitor("Competitor 8"));
+
+			competition.generateBrackets();
 
 		} catch (Exception e) {
 			e.printStackTrace();

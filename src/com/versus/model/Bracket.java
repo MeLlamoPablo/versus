@@ -36,6 +36,44 @@ public class Bracket implements RoundEndedListener {
 		this.rounds = rounds;
 	}
 
+	/**
+	 * Genera un cuadro inferior (lowerBracket) enlazado con el cuadro actual, para un torneo de eliminación doble
+	 * (DoubleEliminationCompetition)
+	 *
+	 * @return El cuadro inferior generado, con las partidas enlazadas.
+	 */
+	public Bracket generateLowerBracket() {
+
+		List<Round> upperBracketRounds = this.getRounds();
+		List<Round> lowerBracketRounds = new ArrayList<>();
+
+		Bracket lowerBracket = new Bracket(lowerBracketRounds);
+
+		// La primera ronda siempre va a ser una ronda con los perdedores de la primera ronda del cuadro superior
+		lowerBracketRounds.add(upperBracketRounds.get(0).generateLosersRound());
+
+		// TODO
+
+		return lowerBracket;
+
+	}
+
+	/*
+	 * En los torneos de doble eliminación (DoubleEliminationCompetition), enlaza el cuadro superior (upperBracket) con
+	 * el cuadro inferior (lowerBracket).
+	 *
+	 * @param lowerBracket El cuadro inferior de la misma competición que this.
+	 */
+	/*public void linkToLowerBracket(Bracket lowerBracket) {
+
+		for (int i = 0; i < this.getRounds().size(); i++) {
+
+			this.getRound(i).linkToLowerRound(lowerBracket.getRound(i));
+
+		}
+
+	}*/
+
 	public static Bracket generateFor(List<Competitor> competitors, Competition competition) throws Exception {
 
 		double numberOfRoundsWithDecimals = log(2, competitors.size());
