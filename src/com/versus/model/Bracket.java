@@ -11,6 +11,7 @@ public class Bracket implements RoundEndedListener {
 
 	private List<Round> rounds = new ArrayList<>();
 	private BracketEndedListener bracketEndedListener;
+	private boolean finished = false;
 
 	public List<Round> getRounds() {
 		return this.rounds;
@@ -22,6 +23,14 @@ public class Bracket implements RoundEndedListener {
 
 	public Round getRound(int index) {
 		return this.rounds.get(index);
+	}
+
+	public boolean isFinished() {
+		return finished;
+	}
+
+	private void setFinished(boolean finished) {
+		this.finished = finished;
 	}
 
 	public BracketEndedListener getBracketEndedListener() {
@@ -49,30 +58,55 @@ public class Bracket implements RoundEndedListener {
 
 		Bracket lowerBracket = new Bracket(lowerBracketRounds);
 
-		// La primera ronda siempre va a ser una ronda con los perdedores de la primera ronda del cuadro superior
-		lowerBracketRounds.add(upperBracketRounds.get(0).generateLosersRound());
+		// La primera ronda siempre va a ser una ronda con los perdedores de la primera ronda del cuadro superior.
+		Round lowerBracketFirstRound = upperBracketRounds.get(0).generateLosersRound();
+		lowerBracketRounds.add(lowerBracketFirstRound);
 
-		// TODO
+		// La segunda ronda siempre va a ser una ronda con los ganadores de la primera, y los perdedores de la
+		// segunda del cuadro superior. Va a tener el mismo núemro de partidas que la primera.
+		Competition currentCompetition = lowerBracketFirstRound.getMatch(0).getCompetition();
+		Round upperBracketSecondRound = upperBracketRounds.get(1);
+
+		lowerBracketRounds.add
+			(Round.fromUpperAndLowerBracketRounds(upperBracketSecondRound, lowerBracketFirstRound, currentCompetition));
+
+		// A partir de aquí, por cada ronda del cuadro superior crearemos dos rondas del cuadro inferior. En la
+		// primera, los del cuadro superior no bajan; es decir, el número de competidores en el cuadro inferior se
+		// reduce en dos. A esta ronda le vamos a llamar roundWithoutDescent.
+		// En la segunda, los del cuadro superior descienden, y por lo tanto el número de competidores en el cuadro
+		// inferior se mantiene. A esta ronda le vamos a llamar roundWithDescent.
+		int upperBracketRoundsLeft = upperBracketRounds.size() - 2;
+
+		for (int i = 0; i < upperBracketRoundsLeft; i++) {
+
+			// La cantidad de partidas en currentUpperBracketRound es la misma que la que va a haber tanto en
+			// roundWithoutDescent como en roundWithDescent
+			Round currentUpperBracketRound = upperBracketRounds.get(i + 2), roundWithoutDescent, roundWithDescent;
+			List<Match> currentUpperBracketRoundMatches = currentUpperBracketRound.getMatches();
+
+			roundWithoutDescent = new Round();
+
+			for (int j = 0; j < currentUpperBracketRoundMatches.size(); j++) {
+
+				Match match = new Match();
+				match.setCompetition(currentCompetition);
+				roundWithoutDescent.addMatch(match);
+
+			}
+
+			lowerBracketRounds.get(lowerBracketRounds.size() - 1).linkToNextRound(roundWithoutDescent);
+
+			roundWithDescent = Round
+				.fromUpperAndLowerBracketRounds(currentUpperBracketRound, roundWithoutDescent, currentCompetition);
+
+			lowerBracketRounds.add(roundWithoutDescent);
+			lowerBracketRounds.add(roundWithDescent);
+
+		}
 
 		return lowerBracket;
 
 	}
-
-	/*
-	 * En los torneos de doble eliminación (DoubleEliminationCompetition), enlaza el cuadro superior (upperBracket) con
-	 * el cuadro inferior (lowerBracket).
-	 *
-	 * @param lowerBracket El cuadro inferior de la misma competición que this.
-	 */
-	/*public void linkToLowerBracket(Bracket lowerBracket) {
-
-		for (int i = 0; i < this.getRounds().size(); i++) {
-
-			this.getRound(i).linkToLowerRound(lowerBracket.getRound(i));
-
-		}
-
-	}*/
 
 	public static Bracket generateFor(List<Competitor> competitors, Competition competition) throws Exception {
 
@@ -139,6 +173,7 @@ public class Bracket implements RoundEndedListener {
 		// Si la ronda es la final
 		if (round.getMatches().size() == 1) {
 			this.getBracketEndedListener().onBracketEnded(round.getMatch(0).getWinner(), this);
+			this.setFinished(true);
 		}
 
 	}

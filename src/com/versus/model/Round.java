@@ -125,29 +125,6 @@ public class Round extends Entity implements MatchUpdatedListener {
 
 	}
 
-	/*
-	 * En los torneos de doble eliminación (DoubleEliminationCompetition), crea un enlace a la ronda correspondiente del
-	 * cuadro inferior (lowerBracket). Esto permite que los perdedores de las partidas de esta ronda pasen
-	 * automáticamente a la misma. El método updateLinks() se encargará de añadir a los competidores
-	 * perdedores a sus correspondientes partidas, una vez su partida correspondiente en esta ronda tenga un resultado
-	 * (MatchResult) que no sea null, ni empate.
-	 *
-	 * @param lowerRound La correspondiente Round en el lowerBracket
-	 */
-	/*void linkToLowerRound(Round lowerRound) {
-
-		for (int i = 0; i < this.matches.size(); i++) {
-
-			MatchLink matchLink = this.matches.get(i).getLink();
-
-			matchLink.setLoserTarget(lowerRound.getMatches().get(i / 2));
-			matchLink.setLoserPosition(
-				(i % 2 == 0) ? MatchLink.EMatchPosition.LOCAL : MatchLink.EMatchPosition.VISITOR);
-
-		}
-
-	}*/
-
 	/**
 	 * Comprueba todos los enlaces de las partidas de esta ronda.
 	 */
@@ -226,5 +203,42 @@ public class Round extends Entity implements MatchUpdatedListener {
 	@Override
 	public void onMatchUpdated(Match match) {
 		this.updateLink(match);
+	}
+
+	/**
+	 * Genera una ronda a partir de otras dos: una de un cuadro superior, y otra de un cuadro inferior. Los perdedores
+	 * de la ronda del cuadro superior irán a la ronda que se va a generar como equipo local. Los ganadores de la
+	 * ronda del cuadro inferior irán a la ronda que se va a generar como equipo visitante.
+	 *
+	 * @param upperBracketRound La ronda del cuadro superior.
+	 * @param lowerBracketRound La ronda del cuadro inferior.
+	 * @param competition La competición donde se está generando esta ronda.
+	 * @return
+	 */
+	static Round fromUpperAndLowerBracketRounds(Round upperBracketRound, Round lowerBracketRound, Competition
+		competition) {
+
+		Round round = new Round();
+
+		for (int i = 0; i < lowerBracketRound.getMatches().size(); i++) {
+
+			Match match = new Match();
+			match.setCompetition(competition);
+
+			MatchLink fromUpperBracket = upperBracketRound.getMatch(i).getLink();
+			MatchLink fromLowerBracket = lowerBracketRound.getMatch(i).getLink();
+
+			fromUpperBracket.setLoserTarget(match);
+			fromUpperBracket.setLoserPosition(MatchLink.EMatchPosition.LOCAL);
+
+			fromLowerBracket.setWinnerTarget(match);
+			fromLowerBracket.setWinnerPosition(MatchLink.EMatchPosition.VISITOR);
+
+			round.addMatch(match);
+
+		}
+
+		return round;
+
 	}
 }

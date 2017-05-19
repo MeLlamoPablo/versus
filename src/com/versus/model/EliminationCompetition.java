@@ -4,6 +4,16 @@ import com.versus.model.interfaces.BracketEndedListener;
 
 abstract class EliminationCompetition extends Competition implements BracketEndedListener {
 
+	private Competitor winner;
+
+	public Competitor getWinner() {
+		return winner;
+	}
+
+	public void setWinner(Competitor winner) {
+		this.winner = winner;
+	}
+
 	public EliminationCompetition(String name) {
 		super(name);
 	}
@@ -17,5 +27,21 @@ abstract class EliminationCompetition extends Competition implements BracketEnde
 	@Override
 	public void shuffleSeeds() {
 		super.shuffleSeeds();
+	}
+
+	@Override
+	public void sendCompetitorsToNextCompetition() {
+
+		CompetitionLink link = this.getLink();
+
+		if (link != null) {
+
+			assert link.getSpots() == 1;
+
+			link.getTarget().addCompetitor(this.getWinner());
+
+		}
+
+
 	}
 }

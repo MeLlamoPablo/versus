@@ -3,7 +3,6 @@ package com.versus.model;
 public class SingleEliminationCompetition extends EliminationCompetition {
 
 	private Bracket bracket;
-	private Competitor winner;
 
 	public Bracket getBracket() {
 		return bracket;
@@ -22,14 +21,6 @@ public class SingleEliminationCompetition extends EliminationCompetition {
 		super.setLink(link);
 	}
 
-	public Competitor getWinner() {
-		return winner;
-	}
-
-	public void setWinner(Competitor winner) {
-		this.winner = winner;
-	}
-
 	public SingleEliminationCompetition(String name) {
 		super(name);
 	}
@@ -41,22 +32,6 @@ public class SingleEliminationCompetition extends EliminationCompetition {
 		this.setBracket(bracket);
 
 		return bracket;
-
-	}
-
-	@Override
-	public void sendCompetitorsToNextCompetition() {
-
-		CompetitionLink link = this.getLink();
-
-		if (link != null) {
-
-			assert link.getSpots() == 1;
-
-			link.getTarget().addCompetitor(this.getWinner());
-
-		}
-
 
 	}
 
