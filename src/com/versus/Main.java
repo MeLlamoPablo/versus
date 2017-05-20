@@ -48,7 +48,7 @@ public class Main {
 			// Final
 			bracket.getRound(2).getMatch(0).setResult(0, 1);*/
 
-			DoubleEliminationCompetition competition = new DoubleEliminationCompetition("Competition");
+			/*DoubleEliminationCompetition competition = new DoubleEliminationCompetition("Competition");
 
 			competition.addCompetitor(new Competitor("Competitor 1"));
 			competition.addCompetitor(new Competitor("Competitor 2"));
@@ -105,7 +105,21 @@ public class Main {
 
 			///// GRAN FINAL /////
 
-			competition.getFinals().setResult(3, 1);
+			competition.getFinals().setResult(3, 1);*/
+
+			LeagueCompetition competition = new LeagueCompetition("Liga");
+
+			competition.addCompetitor(new Competitor("Madrid"));
+			competition.addCompetitor(new Competitor("Barça"));
+			competition.addCompetitor(new Competitor("Atleti"));
+			competition.addCompetitor(new Competitor("Sevilla"));
+
+			competition.generateRounds();
+
+			competition.getRound(0).getMatch(0).setResult(1, 0);
+			competition.getRound(0).getMatch(1).setResult(2, 2);
+
+			System.out.println("a");
 
 		} catch (Exception e) { /* TODO cambiar por hija */
 			e.printStackTrace();

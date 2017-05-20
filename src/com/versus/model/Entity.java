@@ -10,4 +10,22 @@ abstract class Entity {
 		return this.id;
 	}
 
+	void setId(String id) {
+		this.id = id;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || this.getClass() != o.getClass()) return false;
+
+		Entity entity = (Entity) o;
+
+		return this.getId().equals(entity.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
 }

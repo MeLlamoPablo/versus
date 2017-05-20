@@ -107,4 +107,19 @@ public class Match extends Entity {
 
 	}
 
+	@Override
+	public String toString() {
+
+		if (this.getResult() == null) {
+
+			return this.getLocalCompetitor().getName() + " - " + this.getVisitorCompetitor().getName();
+
+		} else {
+
+			return this.getLocalCompetitor().getName() + " " + this.getResult().getLocalScore() +
+				" - " + this.getResult().getVisitorScore() + " " + this.getVisitorCompetitor().getName();
+
+		}
+
+	}
 }
