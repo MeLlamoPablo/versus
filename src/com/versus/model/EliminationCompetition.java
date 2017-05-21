@@ -21,7 +21,7 @@ abstract class EliminationCompetition extends Competition implements BracketEnde
 	@Override
 	// No permitimos empates en las competiciones eliminatorias
 	boolean isResultValid(MatchResult result) {
-		return result.getWinner() != MatchResult.EMatchWinner.DRAW;
+		return result.get() != MatchResult.EMatchWinner.DRAW;
 	}
 
 	@Override

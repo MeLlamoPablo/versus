@@ -1,5 +1,6 @@
 package com.versus.model;
 
+import com.versus.model.exceptions.BadInputException;
 import com.versus.model.interfaces.BracketEndedListener;
 import com.versus.model.interfaces.RoundEndedListener;
 
@@ -34,8 +35,8 @@ public class Bracket implements RoundEndedListener {
 		this.finished = finished;
 	}
 
-	public BracketEndedListener getBracketEndedListener() {
-		return bracketEndedListener;
+	public Optional<BracketEndedListener> getBracketEndedListener() {
+		return Optional.ofNullable(bracketEndedListener);
 	}
 
 	void setBracketEndedListener(BracketEndedListener bracketEndedListener) {
@@ -109,14 +110,14 @@ public class Bracket implements RoundEndedListener {
 
 	}
 
-	public static Bracket generateFor(List<Competitor> competitors, Competition competition) throws Exception {
+	public static Bracket generateFor(List<Competitor> competitors, Competition competition) throws BadInputException {
 
 		double numberOfRoundsWithDecimals = log(2, competitors.size());
 
 		// Si numberOfRoundsWithDecimals tiene parte decimal.
 		if (numberOfRoundsWithDecimals % 1 != 0) {
-			throw new Exception("Generating brackets is only possible with a competitor list with a length equal to " +
-				"a power of two (i.e: 2, 4, 8, 16...)");
+			throw new BadInputException("Generating brackets is only possible with a competitor list with a length " +
+				"equal to a power of two (i.e: 2, 4, 8, 16...)");
 		}
 
 		int numberOfRounds = (int) numberOfRoundsWithDecimals;
@@ -176,7 +177,7 @@ public class Bracket implements RoundEndedListener {
 			Optional<Competitor> winner = round.getMatch(0).getWinner();
 			assert winner.isPresent();
 
-			this.getBracketEndedListener().onBracketEnded(winner.get(), this);
+			this.getBracketEndedListener().ifPresent(listener -> listener.onBracketEnded(winner.get(), this));
 			this.setFinished(true);
 		}
 

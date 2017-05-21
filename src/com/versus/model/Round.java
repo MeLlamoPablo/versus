@@ -1,11 +1,13 @@
 package com.versus.model;
 
+import com.versus.model.exceptions.BadInputException;
 import com.versus.model.interfaces.MatchUpdatedListener;
 import com.versus.model.interfaces.RoundEndedListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class Round extends Entity implements MatchUpdatedListener {
@@ -28,8 +30,8 @@ public class Round extends Entity implements MatchUpdatedListener {
 		return this.matches.get(index);
 	}
 
-	private RoundEndedListener getRoundEndedListener() {
-		return roundEndedListener;
+	private Optional<RoundEndedListener> getRoundEndedListener() {
+		return Optional.ofNullable(roundEndedListener);
 	}
 
 	public void setRoundEndedListener(RoundEndedListener roundEndedListener) {
@@ -41,7 +43,7 @@ public class Round extends Entity implements MatchUpdatedListener {
 	 */
 	public boolean hasEnded() {
 
-		return this.matches.stream().filter(match -> match.getResult() == null).count() == 0;
+		return this.matches.stream().filter(match -> !match.getResult().isPresent()).count() == 0;
 
 	}
 
@@ -51,10 +53,10 @@ public class Round extends Entity implements MatchUpdatedListener {
 	 * @param competitors Los competidores a añadir. El tamaño de esta lista debe de ser el doble del número de partidos
 	 *                    que hay en esta ronda.
 	 */
-	void addCompetitors(List<Competitor> competitors) throws Exception {
+	void addCompetitors(List<Competitor> competitors) throws BadInputException {
 
 		if (competitors.size() != this.matches.size() * 2) {
-			throw new Exception("The number of competitors must be exactly twice as the number of matches.");
+			throw new BadInputException("The number of competitors must be exactly twice as the number of matches.");
 		}
 
 		for (int i = 0; i < (this.matches.size() * 2); i += 2) {
@@ -141,43 +143,53 @@ public class Round extends Entity implements MatchUpdatedListener {
 	 */
 	private void updateLink(Match match) {
 
-		MatchResult result = match.getResult();
+		Optional<MatchResult> result = match.getResult();
 
-		if (result != null) {
+		if (result.isPresent()) {
 
 			MatchLink link = match.getLink();
-			Match winnerTarget = link.getWinnerTarget();
-			Match loserTarget = link.getLoserTarget();
 
-			if (!link.isWinnerLinkFulfilled() && winnerTarget != null) {
+			if (!link.isWinnerLinkFulfilled()) {
 
-				if (link.getWinnerPosition() == MatchLink.EMatchPosition.LOCAL) {
+				link.getWinnerTarget().ifPresent(winnerTarget -> {
 
-					winnerTarget.setLocalCompetitor(match.getWinner().orElse(null));
+					assert link.getWinnerPosition().isPresent();
 
-				} else {
+					if (link.getWinnerPosition().get() == MatchLink.EMatchPosition.LOCAL) {
 
-					winnerTarget.setVisitorCompetitor(match.getWinner().orElse(null));
+						winnerTarget.setLocalCompetitor(match.getWinner().orElse(null));
 
-				}
+					} else {
 
-				link.setWinnerLinkFulfilled(true);
+						winnerTarget.setVisitorCompetitor(match.getWinner().orElse(null));
+
+					}
+
+					link.setWinnerLinkFulfilled(true);
+
+				});
 
 			}
 
-			if (!link.isLoserLinkFulfilled() && loserTarget != null) {
+			if (!link.isLoserLinkFulfilled()) {
 
-				if (link.getLoserPosition() == MatchLink.EMatchPosition.LOCAL) {
+				link.getLoserTarget().ifPresent(loserTarget -> {
 
-					loserTarget.setLocalCompetitor(match.getLoser());
+					assert link.getLoserPosition().isPresent();
 
-				} else {
+					if (link.getLoserPosition().get() == MatchLink.EMatchPosition.LOCAL) {
 
-					loserTarget.setVisitorCompetitor(match.getLoser());
+						loserTarget.setLocalCompetitor(match.getLoser().orElse(null));
 
-				}
+					} else {
 
-				link.setLoserLinkFulfilled(true);
+						loserTarget.setVisitorCompetitor(match.getLoser().orElse(null));
+
+					}
+
+					link.setLoserLinkFulfilled(true);
+
+				});
 
 			}
 
@@ -192,9 +204,9 @@ public class Round extends Entity implements MatchUpdatedListener {
 	 */
 	private void callListener() {
 
-		if (this.getRoundEndedListener() != null && this.hasEnded()) {
+		if (this.hasEnded()) {
 
-			this.getRoundEndedListener().onRoundEnded(this);
+			this.getRoundEndedListener().ifPresent(listener -> listener.onRoundEnded(this));
 
 		}
 
@@ -213,7 +225,7 @@ public class Round extends Entity implements MatchUpdatedListener {
 	 * @param upperBracketRound La ronda del cuadro superior.
 	 * @param lowerBracketRound La ronda del cuadro inferior.
 	 * @param competition La competición donde se está generando esta ronda.
-	 * @return
+	 * @return La ronda generada
 	 */
 	static Round fromUpperAndLowerBracketRounds(Round upperBracketRound, Round lowerBracketRound, Competition
 		competition) {

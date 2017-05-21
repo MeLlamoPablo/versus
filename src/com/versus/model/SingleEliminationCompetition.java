@@ -1,5 +1,7 @@
 package com.versus.model;
 
+import com.versus.model.exceptions.BadInputException;
+
 public class SingleEliminationCompetition extends EliminationCompetition {
 
 	private Bracket bracket;
@@ -25,7 +27,7 @@ public class SingleEliminationCompetition extends EliminationCompetition {
 		super(name);
 	}
 
-	public Bracket generateBracket() throws Exception {
+	public Bracket generateBracket() throws BadInputException {
 
 		Bracket bracket = Bracket.generateFor(this.getCompetitors(), this);
 		bracket.setBracketEndedListener(this);
@@ -41,9 +43,7 @@ public class SingleEliminationCompetition extends EliminationCompetition {
 		this.setWinner(winner);
 		this.sendCompetitorsToNextCompetition();
 
-		if (this.getCompetitionEndedListener() != null) {
-			this.getCompetitionEndedListener().onWinner(winner);
-		}
+		this.getCompetitionEndedListener().ifPresent(listener -> listener.onWinner(winner));
 
 	}
 

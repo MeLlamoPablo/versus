@@ -1,5 +1,6 @@
 package com.versus.model;
 
+@SuppressWarnings("SameParameterValue")
 public class RankedCompetitor extends Competitor {
 
 	private int points;
@@ -86,4 +87,19 @@ public class RankedCompetitor extends Competitor {
 
 		this.setId(competitor.getId());
 	}
+
+	@Override
+	public String toString() {
+		return String.format(
+			"%s (PTS: %d, W: %d, D: %d, L: %d, S: %d, SA: %d)",
+			this.getName(),
+			this.getPoints(),
+			this.getWins(),
+			this.getDraws(),
+			this.getLoses(),
+			this.getScored(),
+			this.getScoredAgainst()
+		);
+	}
+
 }

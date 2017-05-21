@@ -1,5 +1,7 @@
 package com.versus.model;
 
+import com.versus.model.exceptions.BadInputException;
+import com.versus.model.exceptions.NullInputException;
 import com.versus.model.interfaces.MatchUpdatedListener;
 
 import java.util.Optional;
@@ -13,42 +15,40 @@ public class Match extends Entity {
 	private MatchLink link = new MatchLink();
 	private MatchUpdatedListener matchUpdatedListener;
 
-	public MatchResult getResult() {
-		return result;
+	public Optional<MatchResult> getResult() {
+		return Optional.ofNullable(this.result);
 	}
 
-	public void setResult(int localScore, int visitorScore) throws Exception {
+	public void setResult(int localScore, int visitorScore) throws BadInputException {
 		this.setResult(new MatchResult(localScore, visitorScore));
 	}
 
-	private void setResult(MatchResult result) throws Exception {
+	private void setResult(MatchResult result) throws BadInputException {
 
 		if (!this.getCompetition().isResultValid(result)) {
-			throw new Exception("The result you entered is invalid.");
+			throw new BadInputException("The result you entered is invalid.");
 		}
 
-		if (this.getLocalCompetitor() == null || this.getVisitorCompetitor() == null) {
-			throw new Exception("Can't set a result for this match because one of the competitors is missing!");
+		if (!this.getLocalCompetitor().isPresent() || !this.getVisitorCompetitor().isPresent()) {
+			throw new BadInputException("Can't set a result for this match because one of the competitors is missing!");
 		}
 
 		this.result = result;
 
-		if (this.getMatchUpdatedListener() != null) {
-			this.getMatchUpdatedListener().onMatchUpdated(this);
-		}
+		this.getMatchUpdatedListener().ifPresent(listener -> listener.onMatchUpdated(this));
 
 	}
 
-	public Competitor getLocalCompetitor() {
-		return localCompetitor;
+	public Optional<Competitor> getLocalCompetitor() {
+		return Optional.ofNullable(localCompetitor);
 	}
 
 	public void setLocalCompetitor(Competitor localCompetitor) {
 		this.localCompetitor = localCompetitor;
 	}
 
-	public Competitor getVisitorCompetitor() {
-		return visitorCompetitor;
+	public Optional<Competitor> getVisitorCompetitor() {
+		return Optional.ofNullable(visitorCompetitor);
 	}
 
 	public void setVisitorCompetitor(Competitor visitorCompetitor) {
@@ -60,6 +60,10 @@ public class Match extends Entity {
 	}
 
 	public void setCompetition(Competition competition) {
+		if (competition == null) {
+			throw new NullInputException("Competition can't be null!");
+		}
+
 		this.competition = competition;
 	}
 
@@ -67,8 +71,8 @@ public class Match extends Entity {
 		return link;
 	}
 
-	private MatchUpdatedListener getMatchUpdatedListener() {
-		return matchUpdatedListener;
+	private Optional<MatchUpdatedListener> getMatchUpdatedListener() {
+		return Optional.ofNullable(matchUpdatedListener);
 	}
 
 	public void setMatchUpdatedListener(MatchUpdatedListener matchUpdatedListener) {
@@ -77,14 +81,16 @@ public class Match extends Entity {
 
 	public Optional<Competitor> getWinner() {
 
-		if (this.getResult() == null) {
+		Optional<MatchResult> result = this.getResult();
+
+		if (!result.isPresent()) {
 			return Optional.empty();
 		}
 
-		switch (this.getResult().getWinner()) {
+		switch (result.get().get()) {
 
-			case LOCAL: return Optional.of(this.getLocalCompetitor());
-			case VISITOR: return Optional.of(this.getLocalCompetitor());
+			case LOCAL: return this.getLocalCompetitor();
+			case VISITOR: return this.getVisitorCompetitor();
 			case DRAW: return Optional.empty();
 			default: return Optional.empty();
 
@@ -92,18 +98,20 @@ public class Match extends Entity {
 
 	}
 
-	public Competitor getLoser() {
+	public Optional<Competitor> getLoser() {
 
-		if (this.getResult() == null) {
-			return null;
+		Optional<MatchResult> result = this.getResult();
+
+		if (!result.isPresent()) {
+			return Optional.empty();
 		}
 
-		switch (this.getResult().getWinner()) {
+		switch (result.get().get()) {
 
 			case VISITOR: return this.getLocalCompetitor();
 			case LOCAL: return this.getVisitorCompetitor();
-			case DRAW: return null;
-			default: return null;
+			case DRAW: return Optional.empty();
+			default: return Optional.empty();
 
 		}
 
@@ -112,14 +120,21 @@ public class Match extends Entity {
 	@Override
 	public String toString() {
 
-		if (this.getResult() == null) {
+		Optional<MatchResult> resultOpt = this.getResult();
 
-			return this.getLocalCompetitor().getName() + " - " + this.getVisitorCompetitor().getName();
+		Competitor tbd = new Competitor("TBD");
+
+		if (!resultOpt.isPresent()) {
+
+			return this.getLocalCompetitor().orElse(tbd).getName() + " - "
+				+ this.getVisitorCompetitor().orElse(tbd).getName();
 
 		} else {
 
-			return this.getLocalCompetitor().getName() + " " + this.getResult().getLocalScore() +
-				" - " + this.getResult().getVisitorScore() + " " + this.getVisitorCompetitor().getName();
+			MatchResult result = resultOpt.get();
+
+			return this.getLocalCompetitor().orElse(tbd).getName() + " " + result.getLocalScore() +
+				" - " + result.getVisitorScore() + " " + this.getVisitorCompetitor().orElse(tbd).getName();
 
 		}
 

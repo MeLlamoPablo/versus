@@ -1,5 +1,6 @@
 package com.versus.model;
 
+import com.versus.model.exceptions.BadInputException;
 import com.versus.model.interfaces.MatchUpdatedListener;
 
 import java.util.List;
@@ -41,12 +42,12 @@ public class DoubleEliminationCompetition extends EliminationCompetition impleme
 
 	/**
 	 * Genera un cuadro superior, un cuadro inferior, y una gran final para esta competición.
-	 * @throws Exception Si el número de jugadores es incorrecto.
+	 * @throws BadInputException Si el número de jugadores es incorrecto.
 	 */
-	public void generateBrackets() throws Exception {
+	public void generateBrackets() throws BadInputException {
 
 		if (this.getCompetitors().size() < 4) {
-			throw new Exception("Cannot generate a double elimination competition for a tournament for " +
+			throw new BadInputException("Cannot generate a double elimination competition for a tournament for " +
 				"less than four players.");
 		}
 
@@ -74,7 +75,7 @@ public class DoubleEliminationCompetition extends EliminationCompetition impleme
 		upperBracketFinalsLink.setWinnerTarget(grandFinals);
 		upperBracketFinalsLink.setWinnerPosition(MatchLink.EMatchPosition.LOCAL);
 
-		lowerBracketFinalsLink.setLoserTarget(grandFinals);
+		lowerBracketFinalsLink.setWinnerTarget(grandFinals);
 		lowerBracketFinalsLink.setWinnerPosition(MatchLink.EMatchPosition.VISITOR);
 
 		grandFinals.setMatchUpdatedListener(this);
@@ -107,9 +108,7 @@ public class DoubleEliminationCompetition extends EliminationCompetition impleme
 
 		this.sendCompetitorsToNextCompetition();
 
-		if (this.getCompetitionEndedListener() != null) {
-			this.getCompetitionEndedListener().onWinner(winner);
-		}
+		this.getCompetitionEndedListener().ifPresent(listener -> listener.onWinner(winner));
 
 	}
 }

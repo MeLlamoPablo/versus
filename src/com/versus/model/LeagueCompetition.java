@@ -1,9 +1,6 @@
 package com.versus.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LeagueCompetition extends Competition {
@@ -172,9 +169,9 @@ public class LeagueCompetition extends Competition {
 						.stream()
 						// Quitamos las partidas donde el competidor no jugó
 						.filter(match ->
-							match.getLocalCompetitor().equals(competitor)
+							competitor.equals(match.getLocalCompetitor().orElse(null))
 							||
-							match.getVisitorCompetitor().equals(competitor)
+							competitor.equals(match.getVisitorCompetitor().orElse(null))
 						)
 						.findFirst();
 
@@ -183,7 +180,7 @@ public class LeagueCompetition extends Competition {
 				}
 			)
 			// Quitamos las partidas que no tienen resultado
-			.filter(match -> match.getResult() != null)
+			.filter(match -> match.getResult().isPresent())
 			.forEach(match -> {
 
 				// Añadimos las partidas ganadas, empatadas o perdidas, y los puntos correspondientes.
@@ -215,9 +212,12 @@ public class LeagueCompetition extends Competition {
 
 				// Añadimos los puntos que el competidor ha anotado, y los que le han anotado.
 
-				MatchResult result = match.getResult();
+				// Estas assertions deberían ser siempre true porque hemos filtrado los nulos antes.
+				assert match.getResult().isPresent();
+				assert match.getLocalCompetitor().isPresent();
+				MatchResult result = match.getResult().get();
 
-				if (match.getLocalCompetitor().equals(competitor)) {
+				if (match.getLocalCompetitor().get().equals(competitor)) {
 
 					rCompetitor.addScored(result.getLocalScore());
 					rCompetitor.addScoredAgainst(result.getVisitorScore());
@@ -235,11 +235,16 @@ public class LeagueCompetition extends Competition {
 
 	}
 
-	public List<RankedCompetitor> getRankedCompetitors() {
+	/**
+	 * @return La clasificación, es decir, una lista de objetos RankedCompetitor, ordenados por puntos
+	 * totales descendientemente.
+	 */
+	public List<RankedCompetitor> getRanking() {
 		return this.getCompetitors()
 			.stream()
 			.map(this::getRankedCompetitor)
-			.collect(Collectors.toCollection(ArrayList::new)); // TODO sort
+			.sorted(Comparator.comparingInt(RankedCompetitor::getPoints).reversed())
+			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	@Override

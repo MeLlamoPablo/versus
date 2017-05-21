@@ -5,6 +5,7 @@ import com.versus.model.interfaces.CompetitionEndedListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 abstract class Competition extends Entity {
 
@@ -41,8 +42,8 @@ abstract class Competition extends Entity {
 		this.link = link;
 	}
 
-	protected CompetitionEndedListener getCompetitionEndedListener() {
-		return competitionEndedListener;
+	protected Optional<CompetitionEndedListener> getCompetitionEndedListener() {
+		return Optional.ofNullable(competitionEndedListener);
 	}
 
 	public void setCompetitionEndedListener(CompetitionEndedListener competitionEndedListener) {

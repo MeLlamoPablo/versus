@@ -1,10 +1,13 @@
 package com.versus.model;
 
+import java.util.Optional;
+
 /**
  * Un MatchLink (enlace entre partidas) permite determinar el siguiente partido que jugarán los
  * competidores ganador y perdedor. Si esta definido, al llamar al método Match#setResult(), los
  * competidores serán asignados automáticamente al siguiente partido.
  */
+@SuppressWarnings("SameParameterValue")
 public class MatchLink {
 
 	private Match winnerTarget;
@@ -14,16 +17,16 @@ public class MatchLink {
 	private EMatchPosition loserPosition;
 	private boolean loserLinkFulfilled = false;
 
-	public Match getWinnerTarget() {
-		return winnerTarget;
+	public Optional<Match> getWinnerTarget() {
+		return Optional.ofNullable(winnerTarget);
 	}
 
 	public void setWinnerTarget(Match winnerTarget) {
 		this.winnerTarget = winnerTarget;
 	}
 
-	public EMatchPosition getWinnerPosition() {
-		return winnerPosition;
+	public Optional<EMatchPosition> getWinnerPosition() {
+		return Optional.ofNullable(winnerPosition);
 	}
 
 	public void setWinnerPosition(EMatchPosition winnerPosition) {
@@ -38,16 +41,16 @@ public class MatchLink {
 		this.winnerLinkFulfilled = winnerLinkFulfilled;
 	}
 
-	public Match getLoserTarget() {
-		return loserTarget;
+	public Optional<Match> getLoserTarget() {
+		return Optional.ofNullable(loserTarget);
 	}
 
 	public void setLoserTarget(Match loserTarget) {
 		this.loserTarget = loserTarget;
 	}
 
-	public EMatchPosition getLoserPosition() {
-		return loserPosition;
+	public Optional<EMatchPosition> getLoserPosition() {
+		return Optional.ofNullable(loserPosition);
 	}
 
 	public void setLoserPosition(EMatchPosition loserPosition) {
