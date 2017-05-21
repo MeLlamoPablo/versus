@@ -3,6 +3,7 @@ package com.versus.model;
 import com.versus.model.interfaces.MatchUpdatedListener;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DoubleEliminationCompetition extends EliminationCompetition implements MatchUpdatedListener {
 
@@ -100,7 +101,10 @@ public class DoubleEliminationCompetition extends EliminationCompetition impleme
 	// Llamado cuando se ha añadido un resultado a la final.
 	public void onMatchUpdated(Match grandFinals) {
 
-		Competitor winner = grandFinals.getWinner();
+		Optional<Competitor> winnerOptional = grandFinals.getWinner();
+		assert winnerOptional.isPresent();
+		Competitor winner = winnerOptional.get();
+
 		this.sendCompetitorsToNextCompetition();
 
 		if (this.getCompetitionEndedListener() != null) {

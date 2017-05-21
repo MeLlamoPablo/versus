@@ -2,6 +2,8 @@ package com.versus.model;
 
 import com.versus.model.interfaces.MatchUpdatedListener;
 
+import java.util.Optional;
+
 public class Match extends Entity {
 
 	private MatchResult result;
@@ -73,18 +75,18 @@ public class Match extends Entity {
 		this.matchUpdatedListener = matchUpdatedListener;
 	}
 
-	public Competitor getWinner() {
+	public Optional<Competitor> getWinner() {
 
 		if (this.getResult() == null) {
-			return null;
+			return Optional.empty();
 		}
 
 		switch (this.getResult().getWinner()) {
 
-			case LOCAL: return this.getLocalCompetitor();
-			case VISITOR: return this.getVisitorCompetitor();
-			case DRAW: return null;
-			default: return null;
+			case LOCAL: return Optional.of(this.getLocalCompetitor());
+			case VISITOR: return Optional.of(this.getLocalCompetitor());
+			case DRAW: return Optional.empty();
+			default: return Optional.empty();
 
 		}
 

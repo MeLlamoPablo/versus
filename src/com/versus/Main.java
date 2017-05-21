@@ -2,6 +2,8 @@ package com.versus;
 
 import com.versus.model.*;
 
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -118,6 +120,8 @@ public class Main {
 
 			competition.getRound(0).getMatch(0).setResult(1, 0);
 			competition.getRound(0).getMatch(1).setResult(2, 2);
+
+			List<RankedCompetitor> competitors = competition.getRankedCompetitors();
 
 			System.out.println("a");
 

@@ -153,11 +153,11 @@ public class Round extends Entity implements MatchUpdatedListener {
 
 				if (link.getWinnerPosition() == MatchLink.EMatchPosition.LOCAL) {
 
-					winnerTarget.setLocalCompetitor(match.getWinner());
+					winnerTarget.setLocalCompetitor(match.getWinner().orElse(null));
 
 				} else {
 
-					winnerTarget.setVisitorCompetitor(match.getWinner());
+					winnerTarget.setVisitorCompetitor(match.getWinner().orElse(null));
 
 				}
 

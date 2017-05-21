@@ -3,12 +3,15 @@ package com.versus.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class LeagueCompetition extends Competition {
 
 	private List<Round> rounds;
 	// Two legs = Ida y vuelta.
 	private boolean twoLegs;
+	private LeagueCompetitionRules ruleSet;
 
 	public List<Round> getRounds() {
 		return rounds;
@@ -30,14 +33,27 @@ public class LeagueCompetition extends Competition {
 		this.twoLegs = twoLegs;
 	}
 
+	public LeagueCompetitionRules getRuleSet() {
+		return ruleSet;
+	}
+
+	private void setRuleSet(LeagueCompetitionRules ruleSet) {
+		this.ruleSet = ruleSet;
+	}
+
 	public LeagueCompetition(String name) {
-		this(name, false);
+		this(name, false, new LeagueCompetitionRules());
 	}
 
 	public LeagueCompetition(String name, boolean twoLegs) {
+		this(name, twoLegs, new LeagueCompetitionRules());
+	}
+
+	public LeagueCompetition(String name, boolean twoLegs, LeagueCompetitionRules ruleSet) {
 		super(name);
 
 		this.setTwoLegs(twoLegs);
+		this.setRuleSet(ruleSet);
 	}
 
 	public void generateRounds() throws Exception {
@@ -136,20 +152,94 @@ public class LeagueCompetition extends Competition {
 
 	}
 
-	public void getRankedCompetitor(Competitor competitor) {
+	/**
+	 * Calcula los puntos, victorias, empates, derrotas, tantos anotados, y tantos anotados en contra del competidor
+	 * dado.
+	 * @param competitor El competidor sobre el que queremos realizar los cálculos.
+	 * @return Un objeto RankedCompetitor que contiene todos estos datos.
+	 */
+	public RankedCompetitor getRankedCompetitor(Competitor competitor) {
 
 		RankedCompetitor rCompetitor = new RankedCompetitor(competitor);
 
 		this.rounds
 			.stream()
+			// Mapeamos la ronda a la partida que jugó el competidor en cuestión en dicha ronda
 			.map(
-				round -> round
-					.getMatches()
-					.stream()
-					.filter(match ->
-            			match.getLocalCompetitor().equals(competitor) || match.getVisitorCompetitor().equals(competitor)
-        )); // TODO
+				round -> {
+					Optional<Match> matchOptional = round
+						.getMatches()
+						.stream()
+						// Quitamos las partidas donde el competidor no jugó
+						.filter(match ->
+							match.getLocalCompetitor().equals(competitor)
+							||
+							match.getVisitorCompetitor().equals(competitor)
+						)
+						.findFirst();
 
+					assert matchOptional.isPresent();
+					return matchOptional.get();
+				}
+			)
+			// Quitamos las partidas que no tienen resultado
+			.filter(match -> match.getResult() != null)
+			.forEach(match -> {
+
+				// Añadimos las partidas ganadas, empatadas o perdidas, y los puntos correspondientes.
+
+				Optional<Competitor> winner = match.getWinner();
+
+				if (winner.isPresent()) {
+
+					if (winner.get().equals(competitor)) {
+
+						rCompetitor.addPoints(this.getRuleSet().getPointsPerWin());
+						rCompetitor.addWins(1);
+
+					} else {
+
+						rCompetitor.addPoints(this.getRuleSet().getPointsPerLoss());
+						rCompetitor.addLoses(1);
+
+					}
+
+				} else {
+
+					// Si no está presente, la partida ha acabado en empate, ya que hemos quitado de la lista las
+					// partidas donde no se ha reportado ningún resultado.
+					rCompetitor.addPoints(this.getRuleSet().getPointsPerDraw());
+					rCompetitor.addDraws(1);
+
+				}
+
+				// Añadimos los puntos que el competidor ha anotado, y los que le han anotado.
+
+				MatchResult result = match.getResult();
+
+				if (match.getLocalCompetitor().equals(competitor)) {
+
+					rCompetitor.addScored(result.getLocalScore());
+					rCompetitor.addScoredAgainst(result.getVisitorScore());
+
+				} else {
+
+					rCompetitor.addScored(result.getVisitorScore());
+					rCompetitor.addScoredAgainst(result.getLocalScore());
+
+				}
+
+			});
+
+		return rCompetitor;
+
+	}
+
+	public List<RankedCompetitor> getRankedCompetitors() {
+		return this.getCompetitors()
+			.stream()
+			.map(this::getRankedCompetitor)
+			.collect(Collectors.toCollection(ArrayList::new)); // TODO sort
 	}
 
 	@Override

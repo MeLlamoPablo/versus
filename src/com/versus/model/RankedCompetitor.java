@@ -17,12 +17,20 @@ public class RankedCompetitor extends Competitor {
 		this.points = points;
 	}
 
+	void addPoints(int points) {
+		this.setPoints(this.getPoints() + points);
+	}
+
 	public int getWins() {
 		return wins;
 	}
 
 	void setWins(int wins) {
 		this.wins = wins;
+	}
+
+	void addWins(int wins) {
+		this.setWins(this.getWins() + wins);
 	}
 
 	public int getDraws() {
@@ -33,12 +41,20 @@ public class RankedCompetitor extends Competitor {
 		this.draws = draws;
 	}
 
+	void addDraws(int draws) {
+		this.setDraws(this.getDraws() + draws);
+	}
+
 	public int getLoses() {
 		return loses;
 	}
 
 	void setLoses(int loses) {
 		this.loses = loses;
+	}
+
+	void addLoses(int loses) {
+		this.setLoses(this.getLoses() + loses);
 	}
 
 	public int getScored() {
@@ -49,12 +65,20 @@ public class RankedCompetitor extends Competitor {
 		this.scored = scored;
 	}
 
+	void addScored(int scored) {
+		this.setScored(this.getScored() + scored);
+	}
+
 	public int getScoredAgainst() {
 		return scoredAgainst;
 	}
 
 	void setScoredAgainst(int scoredAgainst) {
 		this.scoredAgainst = scoredAgainst;
+	}
+
+	void addScoredAgainst(int scoredAgainst) {
+		this.setScoredAgainst(this.getScoredAgainst() + scoredAgainst);
 	}
 
 	RankedCompetitor(Competitor competitor) {

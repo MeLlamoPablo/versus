@@ -6,6 +6,7 @@ import com.versus.model.interfaces.RoundEndedListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class Bracket implements RoundEndedListener {
 
@@ -172,7 +173,10 @@ public class Bracket implements RoundEndedListener {
 
 		// Si la ronda es la final
 		if (round.getMatches().size() == 1) {
-			this.getBracketEndedListener().onBracketEnded(round.getMatch(0).getWinner(), this);
+			Optional<Competitor> winner = round.getMatch(0).getWinner();
+			assert winner.isPresent();
+
+			this.getBracketEndedListener().onBracketEnded(winner.get(), this);
 			this.setFinished(true);
 		}
 
