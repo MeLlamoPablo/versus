@@ -27,7 +27,6 @@ public class MatchResult {
 	}
 
 	public EMatchWinner get() {
-		// TODO lanzar excepción si no está definido el resultado o los jugadores
 		if (this.getLocalScore() > this.getVisitorScore()) {
 
 			return EMatchWinner.LOCAL;

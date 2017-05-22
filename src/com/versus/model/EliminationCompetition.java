@@ -1,10 +1,14 @@
 package com.versus.model;
 
 import com.versus.model.interfaces.BracketEndedListener;
+import com.versus.model.interfaces.EliminationCompetitionEndedListener;
+
+import java.util.Optional;
 
 abstract class EliminationCompetition extends Competition implements BracketEndedListener {
 
 	private Competitor winner;
+	private EliminationCompetitionEndedListener competitionEndedListener;
 
 	public Competitor getWinner() {
 		return winner;
@@ -12,6 +16,14 @@ abstract class EliminationCompetition extends Competition implements BracketEnde
 
 	public void setWinner(Competitor winner) {
 		this.winner = winner;
+	}
+
+	protected Optional<EliminationCompetitionEndedListener> getCompetitionEndedListener() {
+		return Optional.ofNullable(competitionEndedListener);
+	}
+
+	public void setCompetitionEndedListener(EliminationCompetitionEndedListener competitionEndedListener) {
+		this.competitionEndedListener = competitionEndedListener;
 	}
 
 	public EliminationCompetition(String name) {
@@ -32,16 +44,13 @@ abstract class EliminationCompetition extends Competition implements BracketEnde
 	@Override
 	public void sendCompetitorsToNextCompetition() {
 
-		CompetitionLink link = this.getLink();
-
-		if (link != null) {
+		this.getLink().ifPresent(link -> {
 
 			assert link.getSpots() == 1;
 
 			link.getTarget().addCompetitor(this.getWinner());
 
-		}
-
+		});
 
 	}
 }

@@ -15,9 +15,9 @@ public class SingleEliminationCompetition extends EliminationCompetition {
 	}
 
 	@Override
-	public void setLink(CompetitionLink link) throws Exception {
+	public void setLink(CompetitionLink link) throws BadInputException {
 		if (link.getSpots() != 1) {
-			throw new Exception("A Single Elimination Competition Link can only have one spot.");
+			throw new BadInputException("A Single Elimination Competition Link can only have one spot.");
 		}
 
 		super.setLink(link);

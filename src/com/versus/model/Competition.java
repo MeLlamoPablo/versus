@@ -1,6 +1,6 @@
 package com.versus.model;
 
-import com.versus.model.interfaces.CompetitionEndedListener;
+import com.versus.model.exceptions.BadInputException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,11 +12,6 @@ abstract class Competition extends Entity {
 	private String name;
 	private List<Competitor> competitors = new ArrayList<>();
 	private CompetitionLink link;
-	private CompetitionEndedListener competitionEndedListener;
-
-	public Competition setId() {
-		return this;
-	}
 
 	public String getName() {
 		return name;
@@ -34,20 +29,16 @@ abstract class Competition extends Entity {
 		return competitors;
 	}
 
-	public CompetitionLink getLink() {
-		return link;
+	public Optional<CompetitionLink> getLink() {
+		return Optional.ofNullable(link);
 	}
 
-	public void setLink(CompetitionLink link) throws Exception {
+	public void setLink(Competition target, int spots) {
+		this.link = new CompetitionLink(target, spots);
+	}
+
+	public void setLink(CompetitionLink link) throws BadInputException {
 		this.link = link;
-	}
-
-	protected Optional<CompetitionEndedListener> getCompetitionEndedListener() {
-		return Optional.ofNullable(competitionEndedListener);
-	}
-
-	public void setCompetitionEndedListener(CompetitionEndedListener competitionEndedListener) {
-		this.competitionEndedListener = competitionEndedListener;
 	}
 
 	/**

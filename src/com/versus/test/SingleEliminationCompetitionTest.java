@@ -1,12 +1,12 @@
 package com.versus.test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.versus.model.Bracket;
 import com.versus.model.Competitor;
 import com.versus.model.SingleEliminationCompetition;
 import com.versus.model.exceptions.BadInputException;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class SingleEliminationCompetitionTest {
 

@@ -1,14 +1,21 @@
 package com.versus.model;
 
+import com.versus.model.exceptions.BadInputException;
+import com.versus.model.interfaces.EliminationCompetitionEndedListener;
+import com.versus.model.interfaces.LeagueCompetitionEndedListener;
+import com.versus.model.interfaces.RoundEndedListener;
+
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class LeagueCompetition extends Competition {
+public class LeagueCompetition extends Competition implements RoundEndedListener {
 
 	private List<Round> rounds;
 	// Two legs = Ida y vuelta.
 	private boolean twoLegs;
 	private LeagueCompetitionRules ruleSet;
+	private LeagueCompetitionEndedListener competitionEndedListener;
 
 	public List<Round> getRounds() {
 		return rounds;
@@ -38,6 +45,14 @@ public class LeagueCompetition extends Competition {
 		this.ruleSet = ruleSet;
 	}
 
+	private Optional<LeagueCompetitionEndedListener> getCompetitionEndedListener() {
+		return Optional.ofNullable(competitionEndedListener);
+	}
+
+	public void setCompetitionEndedListener(LeagueCompetitionEndedListener competitionEndedListener) {
+		this.competitionEndedListener = competitionEndedListener;
+	}
+
 	public LeagueCompetition(String name) {
 		this(name, false, new LeagueCompetitionRules());
 	}
@@ -53,7 +68,7 @@ public class LeagueCompetition extends Competition {
 		this.setRuleSet(ruleSet);
 	}
 
-	public void generateRounds() throws Exception {
+	public void generateRounds() throws BadInputException {
 
 		// Creamos una copia de this.getCompetitors porque los iremos rotando;
 		// no queremos modificar el orden del arraylist original.
@@ -61,7 +76,7 @@ public class LeagueCompetition extends Competition {
 		int numberOfCompetitors = competitors.size();
 
 		if (numberOfCompetitors % 2 != 0) {
-			throw new Exception("Can't make a league with an odd number of competitors!");
+			throw new BadInputException("Can't make a league with an odd number of competitors!");
 		}
 
 		List<Round> firstLeg = new ArrayList<>();
@@ -115,10 +130,12 @@ public class LeagueCompetition extends Competition {
 			// Distribuimos las partidas de forma aleatoria para que el primer competidor (el que se queda fijo)
 			// no aparezca siempre el primero.
 			Collections.shuffle(firstLegRound.getMatches());
+			firstLegRound.setRoundEndedListener(this);
 			firstLeg.add(firstLegRound);
 
 			if (this.isTwoLegs()) {
 				Collections.shuffle(secondLegRound.getMatches());
+				secondLegRound.setRoundEndedListener(this);
 				secondLeg.add(secondLegRound);
 			}
 
@@ -247,6 +264,15 @@ public class LeagueCompetition extends Competition {
 			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
+	/**
+	 * @return False si quedan partidas con resultados todavía por reportar, true de lo contrario.
+	 */
+	public boolean hasEnded() {
+
+		return this.getRounds().stream().filter(round -> !round.hasEnded()).count() == 0;
+
+	}
+
 	@Override
 	// En una liga todos los resultados son válidos, incluidos los empates
 	boolean isResultValid(MatchResult result) {
@@ -255,7 +281,31 @@ public class LeagueCompetition extends Competition {
 
 	@Override
 	void sendCompetitorsToNextCompetition() {
-		// TODO
+
+		this.getLink().ifPresent(link -> {
+
+			List<RankedCompetitor> qualified = this.getRanking()
+				.stream()
+				.limit(link.getSpots())
+				.collect(Collectors.toCollection(ArrayList::new));
+
+			qualified.forEach(link.getTarget()::addCompetitor);
+
+		});
+
+	}
+
+	@Override
+	public void onRoundEnded(Round round) {
+
+		if (this.hasEnded()) {
+
+			sendCompetitorsToNextCompetition();
+
+			this.getCompetitionEndedListener().ifPresent(LeagueCompetitionEndedListener::onEnded);
+
+		}
+
 	}
 
 	/**

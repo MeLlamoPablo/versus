@@ -101,23 +101,21 @@ public class Round extends Entity implements MatchUpdatedListener {
 
 		List<Match> losersRoundMatches = new ArrayList<>();
 
-		// TODO hacer esto en un solo bucle
-		for (int i = 0; i < this.matches.size() / 2; i++) {
+		for (int i = 0; i < this.matches.size(); i+=2) {
 
-			Match match = new Match();
-			match.setCompetition(currentCompetition);
+			Match generatedMatch = new Match();
+			generatedMatch.setCompetition(currentCompetition);
 
-			losersRoundMatches.add(match);
+			MatchLink matchLinkA = this.matches.get(i).getLink();
+			MatchLink matchLinkB = this.matches.get(i + 1).getLink();
 
-		}
+			matchLinkA.setLoserTarget(generatedMatch);
+			matchLinkB.setLoserTarget(generatedMatch);
 
-		for (int i = 0; i < this.matches.size(); i++) {
+			matchLinkA.setLoserPosition(MatchLink.EMatchPosition.LOCAL);
+			matchLinkB.setLoserPosition(MatchLink.EMatchPosition.VISITOR);
 
-			MatchLink matchLink = this.matches.get(i).getLink();
-
-			matchLink.setLoserTarget(losersRoundMatches.get(i / 2));
-			matchLink.setLoserPosition(
-				(i % 2 == 0) ? MatchLink.EMatchPosition.LOCAL : MatchLink.EMatchPosition.VISITOR);
+			losersRoundMatches.add(generatedMatch);
 
 		}
 
@@ -195,8 +193,6 @@ public class Round extends Entity implements MatchUpdatedListener {
 
 		}
 
-		callListener();
-
 	}
 
 	/**
@@ -215,6 +211,7 @@ public class Round extends Entity implements MatchUpdatedListener {
 	@Override
 	public void onMatchUpdated(Match match) {
 		this.updateLink(match);
+		callListener();
 	}
 
 	/**

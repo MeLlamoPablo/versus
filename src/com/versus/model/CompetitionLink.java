@@ -1,5 +1,7 @@
 package com.versus.model;
 
+import com.versus.model.exceptions.NullInputException;
+
 /**
  * Un CompetitionLink (enlace entre competiciones) permite crear jerarquías entre competiciones,
  * mediante las cuales los X primeros competidores de la primera competición son automáticamente
@@ -15,6 +17,10 @@ public class CompetitionLink {
 	}
 
 	public void setTarget(Competition target) {
+		if (target == null) {
+			throw new NullInputException("The target of a CompetitionLink can't be null!");
+		}
+
 		this.target = target;
 	}
 
