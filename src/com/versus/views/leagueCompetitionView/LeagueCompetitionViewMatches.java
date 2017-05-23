@@ -1,6 +1,8 @@
 package com.versus.views.leagueCompetitionView;
 
 import com.versus.model.LeagueCompetition;
+import com.versus.model.interfaces.MatchUpdatedListener;
+import com.versus.views.components.roundComponent.RoundComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,13 +19,16 @@ class LeagueCompetitionViewMatches extends JPanel {
 		this.competition = competition;
 	}
 
-	LeagueCompetitionViewMatches(LeagueCompetition competition) {
+	LeagueCompetitionViewMatches(LeagueCompetition competition, MatchUpdatedListener callback) {
 
 		this.setCompetition(competition);
 
 		this.setLayout(new FlowLayout());
 
-		this.add(new JLabel("Hola mundo")); // TODO
+		for (int i = 0; i < competition.getRounds().size(); i++) {
+			this.add(new RoundComponent(competition.getRound(i), "Jornada " + (i + 1), callback));
+		}
+
 		this.setVisible(true);
 
 	}

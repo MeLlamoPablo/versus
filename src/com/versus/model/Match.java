@@ -23,7 +23,7 @@ public class Match extends Entity {
 		this.setResult(new MatchResult(localScore, visitorScore));
 	}
 
-	private void setResult(MatchResult result) throws BadInputException {
+	public void setResult(MatchResult result) throws BadInputException {
 
 		if (!this.getCompetition().isResultValid(result)) {
 			throw new BadInputException("The result you entered is invalid.");

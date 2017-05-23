@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 class LeagueCompetitionViewStandings extends JPanel {
 
 	private LeagueCompetition competition;
+	private JTable table;
 
 	LeagueCompetition getCompetition() {
 		return competition;
@@ -44,10 +45,10 @@ class LeagueCompetitionViewStandings extends JPanel {
 
 		};
 
-		JTable table = new JTable(model);
-		table.setBounds(this.getX(), this.getX(), this.getWidth(), this.getHeight());
+		this.table = new JTable(model);
+		this.table.setBounds(this.getX(), this.getX(), this.getWidth(), this.getHeight());
 
-		JScrollPane panel = new JScrollPane(table);
+		JScrollPane panel = new JScrollPane(this.table);
 		panel.setBounds(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 		panel.setVisible(true);
 
@@ -76,6 +77,19 @@ class LeagueCompetitionViewStandings extends JPanel {
 				return row;
 			})
 			.toArray(Object[][]::new);
+
+	}
+
+	void refreshTableData() {
+
+		table.setModel(new DefaultTableModel(mapLeagueCompetitionToTableData(competition), columnNames) {
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+
+		});
 
 	}
 

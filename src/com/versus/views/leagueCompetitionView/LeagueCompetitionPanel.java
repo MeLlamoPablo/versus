@@ -1,14 +1,19 @@
 package com.versus.views.leagueCompetitionView;
 
 import com.versus.model.LeagueCompetition;
-import com.versus.views.support.*;
+import com.versus.model.Match;
+import com.versus.model.interfaces.MatchUpdatedListener;
+import com.versus.views.support.MenuUI;
 import com.versus.views.support.MenuElement;
 
 import javax.swing.*;
 import java.util.List;
 import java.util.ArrayList;
 
-class LeagueCompetitionPanel extends JPanel {
+class LeagueCompetitionPanel extends JPanel implements MatchUpdatedListener {
+
+	private MenuElement standings;
+	private MenuElement matches;
 
 	private LeagueCompetition competition;
 
@@ -20,12 +25,12 @@ class LeagueCompetitionPanel extends JPanel {
 		this.competition = competition;
 	}
 
-	private List<com.versus.views.support.MenuElement> getMenuElements() {
+	private List<MenuElement> getMenuElements() {
 
 		List<MenuElement> elements = new ArrayList<>();
 
-		elements.add(new MenuElement("Clasificación", new LeagueCompetitionViewStandings(competition)));
-		elements.add(new MenuElement("Partidos", new LeagueCompetitionViewMatches(competition)));
+		elements.add(standings);
+		elements.add(matches);
 
 		return elements;
 
@@ -35,6 +40,9 @@ class LeagueCompetitionPanel extends JPanel {
 		super();
 		this.setCompetition(competition);
 
+		this.standings = new MenuElement("Clasificación", new LeagueCompetitionViewStandings(competition));
+		this.matches = new MenuElement("Partidos", new LeagueCompetitionViewMatches(competition, this));
+
 		this.setLayout(null);
 
 		this.add(new MenuUI(LeagueCompetitionView.WIDTH, LeagueCompetitionView.HEIGHT, getMenuElements()));
@@ -42,4 +50,8 @@ class LeagueCompetitionPanel extends JPanel {
 		this.setVisible(true);
 	}
 
+	@Override
+	public void onMatchUpdated(Match match) {
+		((LeagueCompetitionViewStandings) standings.getContent()).refreshTableData();
+	}
 }

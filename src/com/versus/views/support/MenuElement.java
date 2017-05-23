@@ -15,7 +15,7 @@ public class MenuElement {
 		this.text = text;
 	}
 
-	JPanel getContent() {
+	public JPanel getContent() {
 		return content;
 	}
 

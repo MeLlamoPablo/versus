@@ -3,6 +3,8 @@ package com.versus.views.leagueCompetitionView;
 import com.versus.model.LeagueCompetition;
 import com.versus.views.support.JFrameX;
 
+import javax.swing.*;
+
 
 public class LeagueCompetitionView extends JFrameX {
 
@@ -26,6 +28,7 @@ public class LeagueCompetitionView extends JFrameX {
 		this.add(new LeagueCompetitionPanel(competition));
 
 		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 }

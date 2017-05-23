@@ -2,6 +2,7 @@ package com.versus.views.support;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 
 @SuppressWarnings("WeakerAccess")
 public class JFrameX extends JFrame {
@@ -55,6 +56,12 @@ public class JFrameX extends JFrame {
 		int y = (int) (screenDimensions.getHeight() / 2) - (this.getHeight() / 2);
 
 		this.setLocation(x, y);
+
+	}
+
+	protected void close() {
+
+		this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 
 	}
 
