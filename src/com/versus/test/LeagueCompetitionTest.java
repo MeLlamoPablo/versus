@@ -13,10 +13,10 @@ import java.util.List;
 
 class LeagueCompetitionTest {
 
-	private static Competitor madrid = new Competitor("Madrid");
-	private static Competitor barsa = new Competitor("Barça");
-	private static Competitor atleti = new Competitor("Atleti");
-	private static Competitor sevilla = new Competitor("Sevilla");
+	static Competitor madrid = new Competitor("Madrid");
+	static Competitor barsa = new Competitor("Barça");
+	static Competitor atleti = new Competitor("Atleti");
+	static Competitor sevilla = new Competitor("Sevilla");
 
 	@Test
 	void itShouldCreateASimpleLeague() throws BadInputException {
@@ -60,7 +60,7 @@ class LeagueCompetitionTest {
 	/**
 	 * Hacemos que el Sevilla siempre gane, el Madrid siempre pierda, y el resto empaten entre sí.
 	 */
-	private void processMatch(Match match) throws BadInputException {
+	static void processMatch(Match match) throws BadInputException {
 
 		boolean madridParticipates = madridParticipates(match);
 		boolean sevillaParticipates = sevillaParticipates(match);
@@ -101,13 +101,13 @@ class LeagueCompetitionTest {
 
 	}
 
-	private boolean sevillaParticipates(Match match) {
+	private static boolean sevillaParticipates(Match match) {
 		return
 			sevilla.equals(match.getLocalCompetitor().orElse(null)) ||
 			sevilla.equals(match.getVisitorCompetitor().orElse(null));
 	}
 
-	private boolean madridParticipates(Match match) {
+	private static boolean madridParticipates(Match match) {
 		return
 			madrid.equals(match.getLocalCompetitor().orElse(null)) ||
 			madrid.equals(match.getVisitorCompetitor().orElse(null));

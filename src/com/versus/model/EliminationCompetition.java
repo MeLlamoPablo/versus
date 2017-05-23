@@ -10,8 +10,8 @@ abstract class EliminationCompetition extends Competition implements BracketEnde
 	private Competitor winner;
 	private EliminationCompetitionEndedListener competitionEndedListener;
 
-	public Competitor getWinner() {
-		return winner;
+	public Optional<Competitor> getWinner() {
+		return Optional.ofNullable(winner);
 	}
 
 	public void setWinner(Competitor winner) {
@@ -47,8 +47,9 @@ abstract class EliminationCompetition extends Competition implements BracketEnde
 		this.getLink().ifPresent(link -> {
 
 			assert link.getSpots() == 1;
+			assert this.getWinner().isPresent();
 
-			link.getTarget().addCompetitor(this.getWinner());
+			link.getTarget().addCompetitor(this.getWinner().get());
 
 		});
 

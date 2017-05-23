@@ -1,4 +1,4 @@
-package com.versus.views;
+package com.versus.views.leagueCompetitionView;
 
 import com.versus.model.LeagueCompetition;
 import com.versus.views.support.JFrameX;
@@ -6,8 +6,8 @@ import com.versus.views.support.JFrameX;
 
 public class LeagueCompetitionView extends JFrameX {
 
-	static int WIDTH = 1000;
-	static int HEIGHT = 700;
+	static int WIDTH = 1200;
+	static int HEIGHT = 600;
 
 	private LeagueCompetition competition;
 

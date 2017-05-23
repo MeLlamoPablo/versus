@@ -1,4 +1,4 @@
-package com.versus.views;
+package com.versus.views.support;
 
 import com.versus.model.exceptions.NullInputException;
 
@@ -12,7 +12,7 @@ public class MenuUI extends JPanel {
 	private NavBar navBar;
 	private JPanel currentContent;
 
-	public Optional<JPanel> getCurrentContent() {
+	private Optional<JPanel> getCurrentContent() {
 		return Optional.ofNullable(currentContent);
 	}
 
@@ -20,7 +20,12 @@ public class MenuUI extends JPanel {
 
 		this.getCurrentContent().ifPresent(content -> content.setVisible(false));
 
-		nextContent.setBounds(0, (int) (this.getHeight() * 0.05), this.getWidth(), (int) (this.getHeight() * 0.95));
+		nextContent.setBounds(
+			0,
+			(int) (this.getHeight() * 0.10),
+			this.getWidth(),
+			(int) (this.getHeight() * 0.95)
+		);
 		nextContent.setVisible(true);
 
 		this.currentContent = nextContent;

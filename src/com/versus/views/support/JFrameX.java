@@ -1,7 +1,5 @@
 package com.versus.views.support;
 
-import com.apple.eawt.Application;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,7 +8,6 @@ public class JFrameX extends JFrame {
 
 	private int width;
 	private int height;
-	protected Application application = Application.getApplication();
 	protected Toolkit toolkit = Toolkit.getDefaultToolkit();
 
 	@Override

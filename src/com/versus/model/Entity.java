@@ -17,7 +17,7 @@ abstract class Entity {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || this.getClass() != o.getClass()) return false;
+		if (!(o instanceof Entity)) return false;
 
 		Entity entity = (Entity) o;
 

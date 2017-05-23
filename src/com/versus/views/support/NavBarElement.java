@@ -1,4 +1,4 @@
-package com.versus.views;
+package com.versus.views.support;
 
 class NavBarElement {
 
