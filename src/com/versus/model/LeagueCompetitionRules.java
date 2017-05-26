@@ -61,7 +61,7 @@ public class LeagueCompetitionRules {
 
 	private void throwIfUnmodifiable() {
 
-		if (this.isModifiable()) {
+		if (!this.isModifiable()) {
 
 			throw new UnmodifiableException("Cannot modify the content of this rule set!");
 
