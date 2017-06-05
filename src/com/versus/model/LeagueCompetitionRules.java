@@ -53,10 +53,10 @@ public class LeagueCompetitionRules {
 	}
 
 	public LeagueCompetitionRules(int pointsPerWin, int pointsPerDraw, int pointsPerLoss) {
+		this.setModifiable(true);
 		this.setPointsPerWin(pointsPerWin);
 		this.setPointsPerDraw(pointsPerDraw);
 		this.setPointsPerLoss(pointsPerLoss);
-		this.setModifiable(true);
 	}
 
 	private void throwIfUnmodifiable() {
