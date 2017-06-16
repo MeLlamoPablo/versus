@@ -1,8 +1,9 @@
 package com.versus.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-abstract class Entity {
+abstract class Entity implements Serializable {
 
 	private String id = UUID.randomUUID().toString();
 

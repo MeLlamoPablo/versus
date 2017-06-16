@@ -141,3 +141,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/intellij,macos,windows,linux,java
+
+leagueCompetitions.dat

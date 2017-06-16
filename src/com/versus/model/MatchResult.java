@@ -1,6 +1,6 @@
 package com.versus.model;
 
-public class MatchResult {
+public class MatchResult extends Entity {
 
 	private int localScore;
 	private int visitorScore;

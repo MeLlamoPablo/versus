@@ -8,7 +8,7 @@ import java.util.Optional;
  * competidores serán asignados automáticamente al siguiente partido.
  */
 @SuppressWarnings("SameParameterValue")
-public class MatchLink {
+public class MatchLink extends Entity {
 
 	private Match winnerTarget;
 	private EMatchPosition winnerPosition;

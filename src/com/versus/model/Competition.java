@@ -2,6 +2,7 @@ package com.versus.model;
 
 import com.versus.model.exceptions.BadInputException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

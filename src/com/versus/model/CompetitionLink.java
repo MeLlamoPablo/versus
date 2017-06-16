@@ -7,7 +7,7 @@ import com.versus.model.exceptions.NullInputException;
  * mediante las cuales los X primeros competidores de la primera competición son automáticamente
  * añaidos como competidores en la segunda. X viene dado por el parámetro spots.
  */
-public class CompetitionLink {
+public class CompetitionLink extends Entity {
 
 	private Competition target;
 	private int spots;

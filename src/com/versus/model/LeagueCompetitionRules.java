@@ -3,7 +3,7 @@ package com.versus.model;
 /**
  * Clase que contiene las reglas de una liga, como por ejemplo la cantidad de puntos que otorga una victoria.
  */
-public class LeagueCompetitionRules {
+public class LeagueCompetitionRules extends Entity {
 
 	private int pointsPerWin;
 	private int pointsPerDraw;
