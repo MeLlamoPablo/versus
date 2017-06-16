@@ -22,18 +22,46 @@ victoria y por empate, y al final de todas las jornadas, el equipo con más punt
 Pese a soportar estos tres tipos de competiciones, solo se pueden gestionar ligas mediante interfaz gráfica. Las
 competiciones de eliminación serán implementadas en posteriores versiones.
 
-Al ejecutar el programa, verá una pantalla como la siguiente:
+Al ejecutar el programa, veremos una pantalla como la siguiente:
 
 ```
 *** Versus ***
 
-* 1 - Añadir equipo
-* 2 - Editar liga
+* 1 - Ver ligas
+* 2 - Añadir liga
+* 3 - Editar liga
+* 4 - Borrar liga
+* 5 - Ordenar ligas por nombre
+* 6 - Ordenar ligas por nº de equipos
+* 7 - Añadir equipo a una liga
+* 8 - Lanzar panel de control de una liga
 * 0 - Salir
 
 Por favor, introduzca el número de una opción: 
 ```
 
-Introduzca un `1` y pulse `ENTER` para añadir un equipo. Tras haber añadido suficientes equipos, introduzca un `2`
-para lanzar la interfaz gráfica de edición. Recuerde que es preciso que introduzca un número de equipos par. `versus`
-no soporta aún la generación de ligas con un número de participantes impares, y se producirá un error al intentarla.
+Para crear una liga, primero debemos introducir `2`. Introduciremos el nombre, si es de ida o de ida y vuelta, y el
+número de puntos otorgados por victoria, empate y derrota. Por ejemplo:
+
+```
+Introduzca el nombre de la liga: LaLiga Santander
+¿Tiene la liga ida y vuelta? (Y/N): y
+Introduzca el número de puntos otorgados por victoria: 3
+Introduzca el número de puntos otorgados por empate: 1
+Introduzca el número de puntos otorgados por derrota: 0
+```
+
+Tras ello, deberemos añadir equipos a la liga. Pulsamos la opción `7`, e introducimos el ID de la liga (Si no hemos
+creado una antes, será `1`). Tras ello, introducimos el nombre del equipo:
+
+```
+Introduzca el ID de la liga a la cual añadir un equipo: 1
+Introduzca el nombre del equipo: Sevilla F.C.
+```
+
+Añadiremos tantos equipos como deseemos. **Importante: el número de equipos debe ser par**.
+
+Una vez añadidos, pulsamos 8 e introducimos de nuevo el ID de la liga. Con ello, accederemos al panel de control, donde
+podremos editar los resultados y ver la clasificación.
+
+Recuerda pulsar 0 para salir, en lugar de cerrar la ventana; de esa forma se guardarán los datos para el próximo uso.

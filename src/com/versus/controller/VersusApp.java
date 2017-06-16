@@ -11,6 +11,7 @@ import io.github.mellamopablo.simplecliframework.MenuEntry;
 
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 @SuppressWarnings({"SameParameterValue", "FieldCanBeLocal"})
 public class VersusApp {
@@ -118,6 +119,18 @@ public class VersusApp {
 
 	});
 
+	private MenuEntry sortByName = new MenuEntry("Ordenar ligas por nombre", () -> {
+
+		this.leagues.sort(Comparator.comparing(a -> a.getName()));
+
+	});
+
+	private MenuEntry sortByNumOfCompetitors = new MenuEntry("Ordenar ligas por nº de equipos", () -> {
+
+		this.leagues.sort((a, b) -> b.getCompetitors().size() - a.getCompetitors().size());
+
+	});
+
 	private MenuEntry addTeam = new MenuEntry("Añadir equipo a una liga", () -> {
 
 		int id = askForPositiveInt("Introduzca el ID de la liga a la cual añadir un equipo");
@@ -195,6 +208,8 @@ public class VersusApp {
 			app.add(addLeague);
 			app.add(editLeague);
 			app.add(deleteLeague);
+			app.add(sortByName);
+			app.add(sortByNumOfCompetitors);
 			app.add(addTeam);
 			app.add(launchUI);
 
