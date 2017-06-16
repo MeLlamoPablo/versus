@@ -11,7 +11,7 @@
 perdedor, hasta que solo queda un campeón. Ejemplo:
 [Wimbledon 2016](https://en.wikipedia.org/wiki/2016_Wimbledon_Championships_%E2%80%93_Men%27s_Singles#Draw).
 - **Competición de eliminación doble**: una competición similar a la de eliminación simple, con la diferencia de que
-los perdedores descienden al llamado "cuadro inderior", que puede considerarse como otra competición de eliminación
+los perdedores descienden al llamado "cuadro inferior", que puede considerarse como otra competición de eliminación
 simple en sí misma (al perder en el cuadro inferior sí se elimina del torneo). El ganador del cuadro superior y el del
 cuadro inferior se enfrentan en la final. Ejemplo:
 [The International 2016](http://wiki.teamliquid.net/dota2/The_International/2016/Main_Event#Bracket).
